@@ -1,1 +1,6 @@
 CPH Bin Files/
+
+__pycache__/
+*.vscode/
+*.DS_Store
+*.exe
