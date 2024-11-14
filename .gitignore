@@ -1,8 +1,9 @@
 CPH Bin Files/
+Pelatnas 1/
 
 __pycache__/
 *.vscode/
 *.DS_Store
 *.exe
-*.out
+*.bin
 *.env
