@@ -10,39 +10,29 @@ using namespace std;
 
 const int MOD = 1e9 + 7;
 
+void add(int& a, int b){
+    a = (a + b) % MOD;
+}
+
 void solve(){
     int n, m; cin >> n >> m;
 
-    vector<vector<int>> dp(m + 1, vector<int>(1 << n));
-    dp[0][(1 << n) - 1] = 1;
-    for (int i = 1; i <= m; i++){
-        for (int mask = 0; mask < (1 << n); mask++){
-            for (int subset = mask; subset >= 0; subset = (subset - 1) & mask){
-                int prev_mask = subset | (mask ^ ((1 << n) - 1));
-                
-                bool ok = true;
-                int cnt = 0;
-                for (int j = 0; j < n; j++){
-                    if (mask & prev_mask & (1 << j)){
-                        cnt++;
-                    } else {
-                        if (cnt & 1) ok = false;
-                        cnt = 0;
-                    }
+    vector<int> dp(1 << n), prev(1 << n);
+    prev[(1 << n) - 1] = 1;
+    for (int j = 0; j < m; j++){
+        for (int i = 0; i < n; i++){
+            for (int mask = 0; mask < (1 << n); mask++){
+                dp[mask] = prev[mask ^ (1 << i)];
+                if (i >= 1 && (mask & (1 << i)) && (mask & (1 << i - 1))){
+                    add(dp[mask], prev[mask ^ (1 << i - 1)]);
                 }
-                if (cnt & 1) ok = false;
-                cnt = 0;
-
-                if (ok){
-                    dp[i][mask] += dp[i - 1][prev_mask];
-                    dp[i][mask] %= MOD;
-                }
-                if (subset == 0) break;
+            }
+            for (int mask = 0; mask < (1 << n); mask++){
+                prev[mask] = dp[mask];
             }
         }
     }
-
-    cout << dp[m][(1 << n) - 1] << '\n';
+    cout << dp[(1 << n) - 1] << '\n';
 }
 
 signed main(){
