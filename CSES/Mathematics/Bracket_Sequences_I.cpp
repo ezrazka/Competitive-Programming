@@ -32,7 +32,6 @@ int P(int n, int r){
 }
 
 int C(int n, int r){
-    if (r < 0) return 0;
     return (P(n, r) * inv_fact[r]) % MOD;
 }
 
@@ -48,16 +47,12 @@ void init(){
 }
 
 void solve(){
-    int n, m; cin >> n >> m;
-
-    int ans = 0;
-    for (int i = 0; i < n; i++){
-        ans += binpow(m, __gcd(i, n));
-        ans %= MOD;
+    int n; cin >> n;
+    if (n & 1){
+        cout << 0 << '\n';
+        return;
     }
-    ans = (ans * inv(n)) % MOD;
-
-    cout << ans << '\n';
+    cout << C(n, n / 2) * inv(n / 2 + 1) % MOD << '\n';
 }
 
 signed main(){

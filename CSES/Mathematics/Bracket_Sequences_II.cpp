@@ -48,16 +48,29 @@ void init(){
 }
 
 void solve(){
-    int n, m; cin >> n >> m;
+    int n; cin >> n;
+    string s; cin >> s;
+    int k = s.length();
 
-    int ans = 0;
-    for (int i = 0; i < n; i++){
-        ans += binpow(m, __gcd(i, n));
-        ans %= MOD;
+    if (n & 1){
+        cout << 0 << '\n';
+        return;
     }
-    ans = (ans * inv(n)) % MOD;
 
-    cout << ans << '\n';
+    bool ok = true;
+    int open = 0, closed = 0;
+    for (int i = 0; i < k; i++){
+        if (s[i] == '(') open++;
+        else closed++;
+        if (open < closed || open > n / 2) ok = false;
+    }
+
+    if (!ok){
+        cout << 0 << '\n';
+        return;
+    }
+    
+    cout << ((C(n - k, n / 2 - open) - C(n - k, n / 2 - (open + 1))) % MOD + MOD) % MOD << '\n';
 }
 
 signed main(){
