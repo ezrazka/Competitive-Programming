@@ -10,22 +10,24 @@ using namespace std;
 
 void solve(){
     int n; cin >> n;
-    vector<int> freq(1e6 + 1);
+
+    string s = to_string(n);
+    reverse(s.begin(), s.end());
+    n = s.length();
+
+    int p = 1;
+    vector<int> vans;
     for (int i = 0; i < n; i++){
-        int x; cin >> x;
-        freq[x]++;
+        if (s[i] != '0'){
+            vans.push_back((s[i] - '0') * p);
+        }
+        p *= 10;
     }
 
-    vector<int> dp(1e6 + 1);
-    for (int i = 1e6; i >= 1; i--){
-        int cnt = 0;
-        for (int j = i; j <= 1e6; j += i){
-            cnt += freq[j];
-            dp[i] -= dp[j];
-        }
-        dp[i] += cnt * (cnt - 1) / 2;
+    cout << vans.size() << '\n';
+    for (int i = 0; i < vans.size(); i++){
+        cout << vans[i] << " \n"[i == vans.size() - 1];
     }
-    cout << dp[1] << '\n';
 }
 
 signed main(){

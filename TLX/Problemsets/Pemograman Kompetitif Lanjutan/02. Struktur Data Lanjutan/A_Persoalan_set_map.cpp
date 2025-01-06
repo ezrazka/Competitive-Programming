@@ -9,23 +9,23 @@ using namespace std;
 #define debughere cout << "HERE\n"
 
 void solve(){
-    int n; cin >> n;
-    vector<int> freq(1e6 + 1);
+    int n, k; cin >> n >> k;
+    vector<int> v(n);
     for (int i = 0; i < n; i++){
-        int x; cin >> x;
-        freq[x]++;
+        cin >> v[i];
     }
 
-    vector<int> dp(1e6 + 1);
-    for (int i = 1e6; i >= 1; i--){
-        int cnt = 0;
-        for (int j = i; j <= 1e6; j += i){
-            cnt += freq[j];
-            dp[i] -= dp[j];
-        }
-        dp[i] += cnt * (cnt - 1) / 2;
+    unordered_map<int, int> mp;
+    for (int i = 0; i < k; i++){
+        mp[v[i]]++;
     }
-    cout << dp[1] << '\n';
+    cout << mp.size() << '\n';
+    for (int i = k; i < n; i++){
+        mp[v[i - k]]--;
+        if (mp[v[i - k]] == 0) mp.erase(v[i - k]);
+        mp[v[i]]++;
+        cout << mp.size() << '\n';
+    }
 }
 
 signed main(){

@@ -10,28 +10,25 @@ using namespace std;
 
 void solve(){
     int n; cin >> n;
-    vector<int> freq(1e6 + 1);
-    for (int i = 0; i < n; i++){
-        int x; cin >> x;
-        freq[x]++;
-    }
+    string s; cin >> s;
 
-    vector<int> dp(1e6 + 1);
-    for (int i = 1e6; i >= 1; i--){
-        int cnt = 0;
-        for (int j = i; j <= 1e6; j += i){
-            cnt += freq[j];
-            dp[i] -= dp[j];
+    for (int i = 0; i < n; i++){
+        for (int j = 0; j < n; j++){
+            if (s[i] == 'p' && s[j] == 's'){
+                if (i - j + 1 < min(i - 0 + 1, n - 1 - j + 1)){
+                    cout << "NO\n";
+                    return;
+                }
+            }
         }
-        dp[i] += cnt * (cnt - 1) / 2;
     }
-    cout << dp[1] << '\n';
+    cout << "YES\n";
 }
 
 signed main(){
     ios_base::sync_with_stdio(false), cin.tie(NULL);
     int t = 1;
-    // cin >> t;
+    cin >> t;
     while (t--)
         solve();
     return 0;

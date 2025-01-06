@@ -16,16 +16,16 @@ void solve(){
         freq[x]++;
     }
 
-    vector<int> dp(1e6 + 1);
     for (int i = 1e6; i >= 1; i--){
         int cnt = 0;
         for (int j = i; j <= 1e6; j += i){
             cnt += freq[j];
-            dp[i] -= dp[j];
         }
-        dp[i] += cnt * (cnt - 1) / 2;
+        if (cnt >= 2){
+            cout << i << '\n';
+            return;
+        }
     }
-    cout << dp[1] << '\n';
 }
 
 signed main(){

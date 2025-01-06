@@ -17,19 +17,18 @@ void add(int& a, int b){
 void solve(){
     int n, m; cin >> n >> m;
 
-    vector<int> dp(1 << n), prev(1 << n);
-    prev[(1 << n) - 1] = 1;
+    vector<int> dp(1 << n);
+    dp[(1 << n) - 1] = 1;
     for (int j = 0; j < m; j++){
         for (int i = 0; i < n; i++){
+            vector<int> next(1 << n);
             for (int mask = 0; mask < (1 << n); mask++){
-                dp[mask] = prev[mask ^ (1 << i)];
+                next[mask] = dp[mask ^ (1 << i)];
                 if (i >= 1 && (mask & (1 << i)) && (mask & (1 << i - 1))){
-                    add(dp[mask], prev[mask ^ (1 << i - 1)]);
+                    add(next[mask], dp[mask ^ (1 << i - 1)]);
                 }
             }
-            for (int mask = 0; mask < (1 << n); mask++){
-                prev[mask] = dp[mask];
-            }
+            dp = next;
         }
     }
     cout << dp[(1 << n) - 1] << '\n';

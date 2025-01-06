@@ -9,23 +9,17 @@ using namespace std;
 #define debughere cout << "HERE\n"
 
 void solve(){
-    int n; cin >> n;
-    vector<int> freq(1e6 + 1);
-    for (int i = 0; i < n; i++){
-        int x; cin >> x;
-        freq[x]++;
-    }
+    string s; cin >> s;
+    int n = s.length();
 
-    vector<int> dp(1e6 + 1);
-    for (int i = 1e6; i >= 1; i--){
-        int cnt = 0;
-        for (int j = i; j <= 1e6; j += i){
-            cnt += freq[j];
-            dp[i] -= dp[j];
+    int ans = 0;
+    for (int i = 0; i < n; i++){
+        if (i < n - 1 && s[i] == '0' && s[i + 1] == '0'){
+            i++;
         }
-        dp[i] += cnt * (cnt - 1) / 2;
+        ans++;
     }
-    cout << dp[1] << '\n';
+    cout << ans << '\n';
 }
 
 signed main(){

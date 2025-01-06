@@ -9,53 +9,58 @@ using namespace std;
 #define debughere cout << "HERE\n"
 
 int calc(int x){
-    if (x < 0) return 0;
+    if (x == -1) return 0;
 
-    string s = to_string(x);
-    int n = s.length();
-    vector<vector<int>> dp(n + 1, vector<int>(10));
+    string s = "0" + to_string(x);
+    int n = s.length() - 1;
+
+    int dp[n + 1][10][2][2];
+    memset(dp, 0, sizeof(dp));
+    dp[0][0][1][1] = 1;
     for (int i = 1; i <= n; i++){
-        if (i == 1){
-            for (int d = 0; d <= s[i - 1] - '0'; d++){
-                dp[i][d] = 1;
-            }
-        } else {
-            for (int pd = 0; pd < s[i - 2] - '0'; pd++){
-                for (int d = 0; d <= 9; d++){
-                    if (d == 0 || d != pd){
-                        dp[i][d] += dp[i - 1][pd];
+        for (int d = 0; d < 10; d++){
+            for (int pd = 0; pd < 10; pd++){
+                if (d == pd){
+                    if (d == 0){
+                        dp[i][d][1][0] += dp[i - 1][pd][1][0];
+                        if (d < s[i] - '0'){
+                            dp[i][d][1][0] += dp[i - 1][pd][1][1];
+                        }
+                        if (d == s[i] - '0'){
+                            dp[i][d][1][1] += dp[i - 1][pd][1][1];
+                        }
                     }
+                    continue;
                 }
-            }
-            int pd = s[i - 2] - '0';
-            for (int d = 0; d <= s[i - 1] - '0'; d++){
-                if (d == 0 || d != pd){
-                    dp[i][d] += dp[i - 1][pd];
+                dp[i][d][0][0] += dp[i - 1][pd][0][0];
+                dp[i][d][0][0] += dp[i - 1][pd][1][0];
+                if (d < s[i] - '0'){
+                    dp[i][d][0][0] += dp[i - 1][pd][0][1];
+                    dp[i][d][0][0] += dp[i - 1][pd][1][1];
                 }
-            }
-            if (x == 1 || x == 10){
-                for (int i = 0; i <= 9; i++){
-                    cout << dp[n][i] << '\n';
+                if (d == s[i] - '0'){
+                    dp[i][d][0][1] += dp[i - 1][pd][0][1];
+                    dp[i][d][0][1] += dp[i - 1][pd][1][1];
                 }
             }
         }
     }
-    if (x == 1 || x == 10){
-        for (int i = 0; i <= 9; i++){
-            cout << dp[n][i] << '\n';
+
+    int res = 0;
+    for (int d = 0; d < 10; d++){
+        for (int leading : {0, 1}){
+            for (int tight : {0, 1}){
+                res += dp[n][d][leading][tight];
+            }
         }
     }
-    return accumulate(dp[n].begin(), dp[n].end(), 0ll);
+
+    return res;
 }
 
 void solve(){
     int a, b; cin >> a >> b;
 
-    for (int i = 0; i <= 100; i++){
-        cout << i << ": " << calc(i) << '\n';
-    }
-
-    cout << calc(b) << ' ' << calc(a - 1) << '\n';
     cout << calc(b) - calc(a - 1) << '\n';
 }
 

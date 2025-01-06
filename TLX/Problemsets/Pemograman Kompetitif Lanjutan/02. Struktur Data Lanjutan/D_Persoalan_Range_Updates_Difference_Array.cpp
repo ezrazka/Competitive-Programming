@@ -10,22 +10,22 @@ using namespace std;
 
 void solve(){
     int n; cin >> n;
-    vector<int> freq(1e6 + 1);
-    for (int i = 0; i < n; i++){
-        int x; cin >> x;
-        freq[x]++;
+    vector<int> pref(n + 1);
+
+    int q; cin >> q;
+    while (q--){
+        int l, r, x; cin >> l >> r >> x; l--, r--;
+        pref[l] += x;
+        pref[r + 1] -= x;
     }
 
-    vector<int> dp(1e6 + 1);
-    for (int i = 1e6; i >= 1; i--){
-        int cnt = 0;
-        for (int j = i; j <= 1e6; j += i){
-            cnt += freq[j];
-            dp[i] -= dp[j];
-        }
-        dp[i] += cnt * (cnt - 1) / 2;
+    for (int i = 1; i <= n; i++){
+        pref[i] += pref[i - 1];
     }
-    cout << dp[1] << '\n';
+
+    for (int i = 0; i < n; i++){
+        cout << pref[i] << " \n"[i == n - 1];
+    }
 }
 
 signed main(){
