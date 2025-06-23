@@ -28,7 +28,7 @@ void solve(){
     for (int i = n - 1; i >= 0; i--){
         for (int k = 1; k <= 100; k++){
             for (auto [b, idx] : queries[k][i]){
-                vans[idx] += 
+                vans[idx] += 1;
             }
         }    
     }
