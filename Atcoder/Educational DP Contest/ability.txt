@@ -1,0 +1,6 @@
+I_Coins.cpp, little help
+J_Sushi.cpp, full help
+O_Matching.cpp, little help
+W_Intervals.cpp, full help
+X_Towers.cpp, lots of help
+Z_Frog_3.cpp, full help

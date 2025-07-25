@@ -51,7 +51,7 @@ void solve(){
         adj[v].push_back(u);
     }
 
-    segment_tree<int> tree(n);
+    segment_tree<int> tree(n); // store all sub-segment trees adjacently in a single segment tree (for simplicity)
 
     vector<int> sz(n), depth(n), p(n);
     p[0] = -1;
@@ -66,23 +66,23 @@ void solve(){
             }
         }
     };
-    dfs(dfs, 0, -1);
+    dfs(dfs, 0, -1); // dfs to precompute each node's size, depth, and parent
 
     vector<int> id(n), top(n);
     int timer = 0;
     auto dfs_hld = [&](auto self, int node, int parent, int cur_top) -> void {
-        id[node] = timer++;
-        top[node] = cur_top;
-        tree.update(id[node], v[node]);
+        id[node] = timer++; // store id for segment tree start index
+        top[node] = cur_top; // store node of heavy edge top node
+        tree.update(id[node], v[node]); // we treat all light edges as heavy edges of size 1 (for simplicity)
         int heavy_child = -1;
         for (int child : adj[node]){
             if (child != parent){
-                if (heavy_child == -1 || sz[child] > sz[heavy_child]){
+                if (heavy_child == -1 || sz[child] > sz[heavy_child]){ // choose largest subtree (for simplicity and slight optimization)
                     heavy_child = child;
                 }
             }
         }
-        if (heavy_child != -1){
+        if (heavy_child != -1){ // prioritize heavy child, so that all nodes in the same edge are contiguous
             self(self, heavy_child, node, cur_top);
             for (int child : adj[node]){
                 if (child != parent && child != heavy_child){
@@ -95,17 +95,15 @@ void solve(){
 
     auto query = [&](int a, int b) -> int {
         int res = 0;
-        while (top[a] != top[b]){
+        while (top[a] != top[b]){ // while they're on different edges (their top is different), raise the deeper one up to the next edge
             if (depth[top[a]] < depth[top[b]]) swap(a, b);
-            res = max(res, tree.query(id[top[a]], id[a]));
+            res = max(res, tree.query(id[top[a]], id[a])); // contribute to the result along the way
             a = p[top[a]];
         }
         if (depth[a] > depth[b]) swap(a, b);
-        res = max(res, tree.query(id[a], id[b]));
+        res = max(res, tree.query(id[a], id[b])); // now they must be on the same edge
         return res;
     };
-    // proof for time complexity: log n light edges in a path from root to leaf, therefore log n heavy edges
-    // proof for LCA correctness
 
     while (q--){
         int qq; cin >> qq;

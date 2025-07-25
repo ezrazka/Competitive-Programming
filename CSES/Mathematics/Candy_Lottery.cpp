@@ -23,7 +23,20 @@ void solve(){
     for (int i = 1; i <= k - 1; i++){
         ans -= pow(1.0 * i / k, n);
     }
-    ans += EPS;
+    ostringstream oss;
+    oss << fixed << setprecision(7) << ans;
+    string s = oss.str();
+    if (s.back() == '5'){
+        ld rounded = stold(s);
+        if (abs(ans - rounded) < EPS){
+            if ((s[s.length() - 2] - '0') & 1){
+                cout << fixed << setprecision(6) << ceil(ans * 1e6) / 1e6 << '\n';
+            } else {
+                cout << fixed << setprecision(6) << floor(ans * 1e6) / 1e6 << '\n';
+            }
+            return;
+        }
+    }
     cout << fixed << setprecision(6) << ans << '\n';
 }
 
