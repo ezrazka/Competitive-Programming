@@ -19,17 +19,20 @@ void solve(){
 
     string ans;
     vector<vector<bool>> vis(n, vector<bool>(n));
-    vector<pair<int, int>> cur;
-    vector<pair<int, int>> nex;
+    vector<pair<int, int>> cur; // the smallest letter per current depth
+    vector<pair<int, int>> nex; // the smallest letter per next depth
     cur.push_back({0, 0});
     vis[0][0] = true;
     while (!cur.empty()){
+        // add char to string
         ans += v[cur[0].fi][cur[0].se];
+        // find smallest letter
         char mn = 'Z';
         for (auto [i, j] : cur){
             if (i + 1 < n) mn = min(mn, v[i + 1][j]);
             if (j + 1 < n) mn = min(mn, v[i][j + 1]);
         }
+        // push next indices only if equal to smallest letter
         for (auto [i, j] : cur){
             if (i + 1 < n && v[i + 1][j] == mn && !vis[i + 1][j]){
                 vis[i + 1][j] = true;
@@ -40,6 +43,7 @@ void solve(){
                 nex.push_back({i, j + 1});
             }
         }
+        // update cur to nex
         cur = nex;
         nex.clear();
     }
