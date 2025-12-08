@@ -1,39 +1,33 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define int long long
-#define ld long double
-#define fi first
-#define se second
-#define debug(x) cout << "(" << #x << " : " << (x) << ")\n"
-#define debughere cout << "HERE\n"
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-void solve(){
-    int n, k; cin >> n >> k;
-    string s; cin >> s;
+    int N, M;
+    cin >> N >> M;
 
-    sort(s.begin(), s.end());
-    do {
-        int cnt = 0;
-        for (int i = 0; i < n / 2; i++){
-            if (s[i] == s[(n - 1) - i]){
-                cnt++;
-            }
+    vector<long long> A(N+1), B(M+1);
+    for (int i = 0; i <= N; i++) cin >> A[i];
+    for (int j = 0; j <= M; j++) cin >> B[j];
+
+    int K = N + M;
+    vector<long long> C(K+1, (1LL<<62));
+
+    for (int k = 0; k <= K; k++) {
+        int L = max(0, k - M);
+        int R = min(N, k);
+        for (int i = L; i <= R; i++) {
+            C[k] = min(C[k], A[i] + B[k - i]);
         }
-        if (cnt == k){
-            cout << "YES\n";
-            return;
-        }
-    } while (next_permutation(s.begin(), s.end()));
+    }
 
-    cout << "NO\n";
-}
+    for (int k = 0; k <= K; k++) {
+        if (k) cout << ' ';
+        cout << C[k];
+    }
+    cout << '\n';
 
-signed main(){
-    ios_base::sync_with_stdio(false), cin.tie(NULL);
-    int t = 1;
-    cin >> t;
-    while (t--)
-        solve();
     return 0;
 }
