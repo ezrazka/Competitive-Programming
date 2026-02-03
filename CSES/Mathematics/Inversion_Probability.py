@@ -1,4 +1,6 @@
-from decimal import Decimal
+from decimal import Decimal, getcontext
+
+getcontext().prec = 50
 
 n = int(input())
 v = list(map(Decimal, input().split()))
