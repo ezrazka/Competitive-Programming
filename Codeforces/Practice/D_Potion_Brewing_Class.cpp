@@ -3,64 +3,27 @@ using namespace std;
 
 #define int long long
 #define ld long double
-#define fi first
-#define se second
 #define debug(x) cout << "(" << #x << " : " << (x) << ")\n"
 #define debughere cout << "HERE\n"
 
 const int MOD = 998244353;
-constexpr int N = 2e5;
+const int N = 2e5 + 1;
 
 vector<int> spf(N + 1);
-vector<int> inv(N + 1);
 
-struct fraction {
-    int num, denom;
-};
-
-struct element {
-    int value = 1, sum = 0;
-    map<int, int> primes;
-
-    void transition(element &other, fraction &frac){ 
-        if (primes.size() < other.primes.size()){
-            swap(primes, other.primes);
-        }
-
-        map<int, int> offset;
-        {
-            int &n = frac.num;
-            while (n > 1){
-                int prime = spf[n];
-                offset[prime]++;
-                n /= prime;
-            }
-        }
-        {
-            int &n = frac.denom;
-            while (n > 1){
-                int prime = spf[n];
-                offset[prime]--;
-                n /= prime;
-            }
-        }
-
-        /* update value, sum, primes */
-        // int a = 1, b = 1;
-        // for (auto [prime, cnt] : other.primes){
-        //     {
-        //         int times = max(0ll, (cnt - primes[prime]) + offset[prime]);
-        //         while (times--){
-        //             primes[prime]++;
-        //             a *= prime;
-        //             a %= MOD;
-        //         }
-        //     }
-        // }
-
-        
+int binpow(int a, int b){
+    int res = 1;
+    while  (b > 0){
+        if (b & 1) res = (res * a) % MOD;
+        a = (a * a) % MOD;
+        b >>= 1;
     }
-};
+    return res;
+}
+
+int inv(int a){
+    return binpow(a, MOD - 2);
+}
 
 void init(){
     iota(spf.begin(), spf.end(), 0);
@@ -74,51 +37,95 @@ void init(){
             }
         }
     }
-
-    inv[0] = -1, inv[1] = 1;
-    for (int a = 2; a <= N; a++){
-        inv[a] = MOD - (MOD / a) * inv[MOD % a] % MOD;
-    }
 }
 
 void solve(){
     int n; cin >> n;
-    vector<vector<pair<int, fraction>>> adj(n);
+    vector<vector<pair<int, pair<int, int>>>> adj(n);
     for (int _ = 0; _ < n - 1; _++){
-        int i, j, x, y; cin >> i >> j >> x >> y; i--, j--;
-        adj[i].emplace_back(j, fraction{x, y});
-        adj[j].emplace_back(i, fraction{y, x});
+        int u, v; cin >> u >> v; u--, v--;
+        int p, q; cin >> p >> q;
+        {
+            int gcd = __gcd(p, q);
+            p /= gcd, q /= gcd;
+        }
+        adj[u].emplace_back(v, pair<int, int>{p, q});
+        adj[v].emplace_back(u, pair<int, int>{q, p});
     }
-
-    vector<element> dp(n);
+    
+    vector<int> dp(n);
+    map<int, int> lcm;
+    map<int, int> mp;
+    int ans = 0;
     auto dfs = [&](auto self, int node, int parent) -> void {
-        for (auto [child, frac] : adj[node]){
+        ans = (ans + dp[node]) % MOD;
+        for (auto [child, factor] : adj[node]){
+            auto [p, q] = factor;
             if (child != parent){
+                int val = (q * inv(p)) % MOD;
+                dp[child] = (dp[node] * val) % MOD;
+                {
+                   int temp = q;
+                    while (temp > 1){
+                        int prime = spf[temp];
+                        int cnt = 0;
+                        while (temp % prime == 0){
+                            cnt++;
+                            temp /= prime;
+                        }
+                        mp[prime] -= cnt;
+                    }
+                }
+                {
+                    int temp = p;
+                    while (temp > 1){
+                        int prime = spf[temp];
+                        int cnt = 0;
+                        while (temp % prime == 0){
+                            cnt++;
+                            temp /= prime;
+                        }
+                        mp[prime] += cnt;
+                        lcm[prime] = max(lcm[prime], mp[prime]);
+                    }
+                }
                 self(self, child, node);
-                dp[node].transition(dp[child], frac);
+                {
+                   int temp = q;
+                    while (temp > 1){
+                        int prime = spf[temp];
+                        int cnt = 0;
+                        while (temp % prime == 0){
+                            cnt++;
+                            temp /= prime;
+                        }
+                        mp[prime] += cnt;
+                    }
+                }
+                {
+                    int temp = p;
+                    while (temp > 1){
+                        int prime = spf[temp];
+                        int cnt = 0;
+                        while (temp % prime == 0){
+                            cnt++;
+                            temp /= prime;
+                        }
+                        mp[prime] -= cnt;
+                    }
+                }
             }
         }
     };
+    dp[0] = 1;
     dfs(dfs, 0, -1);
-
-    cout << dp[0].sum << '\n';
-
-    /*
-    tree dp,
-    each node stores the answer for its subtree, and a map of the nodes value
-    at each transition, 
-    */
-
-    /*
-    the problem is basically just a tree based lcm problem MOD mod
-
-    so its just a (somewhat) simple tree dp,
-
-    an issue: i can't determine the lcm because mod loses information
-        * maybe every node should store the current value in a
-          prime factorization map, handle with small to large merging
-        * 
-    */
+    
+    for (auto [prime, cnt] : lcm){
+        while (cnt--){
+            ans = (ans * prime) % MOD;
+        }
+    }
+    cout << ans << '\n';
 }
 
 signed main(){

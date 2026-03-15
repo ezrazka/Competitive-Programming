@@ -6,8 +6,8 @@ using namespace std;
 #define debug(x) cout << "(" << #x << " : " << (x) << ")\n"
 #define debughere cout << "HERE\n"
 
-const int N = 5000;
-vector<vector<int>> memo(N, vector<int>(N, -1));
+const int M = 5000;
+vector<vector<int>> memo(M, vector<int>(M, -1));
 
 int query(int i, int j){
     if (memo[i][j] != -1){

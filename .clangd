@@ -1,0 +1,13 @@
+CompileFlags:
+  Add:
+    - -std=gnu++17
+    - -D__GNUC__=14
+    - -nostdinc++
+    - -I/usr/local/Cellar/gcc/14.2.0/include/c++/14
+    - -I/usr/local/Cellar/gcc/14.2.0/include/c++/14/x86_64-apple-darwin21
+    - -I/usr/local/Cellar/gcc/14.2.0/include/c++/14/backward
+    - -I/usr/local/Cellar/gcc/14.2.0/lib/gcc/current/gcc/x86_64-apple-darwin21/14/include
+    - -I/Library/Developer/CommandLineTools/SDKs/MacOSX12.sdk/usr/include
+Diagnostics:
+  Suppress:
+    - builtin_definition
