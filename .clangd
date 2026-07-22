@@ -11,3 +11,5 @@ CompileFlags:
 Diagnostics:
   Suppress:
     - builtin_definition
+Completion:
+  HeaderInsertion: Never

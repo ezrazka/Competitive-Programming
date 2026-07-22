@@ -21,6 +21,8 @@ void solve(){
     iota(vans1.begin(), vans1.end(), 1);
     iota(vans2.begin(), vans2.end(), 1);
     rotate(vans2.begin(), vans2.begin() + a, vans2.begin() + a + b);
+    int x = 1 << n + 1;
+    cout << x << '\n';
 
     cout << "YES\n";
     for (int i = 0; i < n; i++){
